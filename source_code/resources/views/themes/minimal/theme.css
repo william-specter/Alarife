@@ -1,0 +1,233 @@
+/* Modern Minimalist — grid, air, restraint. */
+
+body {
+    background: var(--site-bg);
+}
+
+.site-header {
+    background: var(--site-bg);
+    backdrop-filter: none;
+    border-bottom: 2px solid var(--site-text);
+}
+
+.site-header__inner {
+    min-height: 5rem;
+}
+
+.site-brand__name {
+    font-size: 1rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-family: var(--site-font-body);
+    font-weight: 700;
+}
+
+.site-brand__tag {
+    display: none;
+}
+
+.site-nav a {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+}
+
+.site-actions .search-form {
+    border-radius: 0;
+    border-color: var(--site-text);
+}
+
+.site-actions .search-form button {
+    border-radius: 0;
+    background: var(--site-text);
+}
+
+.home-intro {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+    border-bottom: 2px solid var(--site-text);
+    padding-bottom: 2.2rem;
+    margin-top: 1rem;
+}
+
+.home-intro h1 {
+    font-family: var(--site-font-heading);
+    font-size: clamp(2.8rem, 1.8rem + 4.4vw, 6rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 0.98;
+    max-width: 16ch;
+}
+
+.home-intro__meta {
+    border-top: 1px solid var(--site-text);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.cover-section {
+    margin-top: 2rem;
+}
+
+.cover-carousel,
+.cover-hero,
+.cover-card,
+.article-card__media,
+.content-image img,
+.callout {
+    border-radius: 0;
+}
+
+.cover-hero {
+    min-height: clamp(320px, 44vw, 560px);
+}
+
+.cover-hero__copy h1 {
+    font-weight: 500;
+    letter-spacing: -0.04em;
+}
+
+.section-heading {
+    border-bottom: 1px solid var(--site-text);
+    padding-bottom: 0.5rem;
+}
+
+.section-heading h2 {
+    font-family: var(--site-font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.card-grid {
+    gap: 2rem 1.4rem;
+}
+
+.article-card {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.article-card__media {
+    aspect-ratio: 4 / 5;
+}
+
+.article-card__topic {
+    color: var(--site-text);
+}
+
+.article-card h3 {
+    font-family: var(--site-font-heading);
+    font-size: 1.35rem;
+    letter-spacing: -0.03em;
+}
+
+.article-card p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.topic-card {
+    border: 1px solid var(--site-text);
+    border-radius: 0;
+    background: transparent;
+    padding: 1.4rem;
+}
+
+.topic-card:hover {
+    transform: none;
+    background: var(--site-text);
+    color: var(--site-bg);
+}
+
+.topic-card:hover p,
+.topic-card:hover .topic-card__meta,
+.topic-card:hover .topic-card__index {
+    color: color-mix(in srgb, var(--site-bg) 78%, transparent);
+}
+
+.topic-header {
+    border-bottom: 1px solid var(--site-text);
+    padding-bottom: 1.2rem;
+}
+
+.article-header {
+    border-bottom: 2px solid var(--site-text);
+    padding-bottom: 1.4rem;
+}
+
+.article-header h1 {
+    font-weight: 500;
+    letter-spacing: -0.045em;
+}
+
+.article-body > p:first-of-type::first-letter {
+    float: none;
+    font-size: inherit;
+    line-height: inherit;
+    padding: 0;
+    color: inherit;
+}
+
+.article-body {
+    font-size: 1.05rem;
+    max-width: 66ch;
+}
+
+.article-body h2 {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+}
+
+.article-body blockquote {
+    border-left: 2px solid var(--site-text);
+    font-family: var(--site-font-body);
+    font-size: 1.1rem;
+}
+
+.article-side {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--site-line);
+    padding-top: 1rem;
+}
+
+.article-side h2 {
+    font-family: var(--site-font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.prev-next a {
+    border-radius: 0;
+    background: transparent;
+}
+
+.callout {
+    border-left: 2px solid var(--site-text);
+    padding: 1rem 0 1rem 1.2rem;
+    background: transparent;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.search-page__form .search-form,
+.search-form {
+    border-radius: 0;
+}
+
+.site-footer {
+    border-top: 2px solid var(--site-text);
+}
+
+.site-footer strong {
+    font-family: var(--site-font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}

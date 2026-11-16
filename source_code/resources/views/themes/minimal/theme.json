@@ -1,0 +1,13 @@
+{
+    "key": "minimal",
+    "name": "Modern Minimalist",
+    "version": "1.0.0",
+    "description": "Spacious modernism: generous whitespace, a strong grid, restrained chrome and crisp sans-serif type.",
+    "defaults": {
+        "colors": { "primary": "#141414", "accent": "#d9482b", "background": "#ffffff", "text": "#151515" },
+        "typography": { "headingFont": "sans", "bodyFont": "sans", "baseSize": 17, "lineHeight": 1.7 },
+        "layout": { "contentWidth": 1080, "density": "spacious", "sidebar": false },
+        "carousel": { "autoplay": false, "transition": "slide", "showCaptions": true },
+        "accessibility": { "reduceMotion": true, "contrast": "normal" }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "classic",
+    "name": "Classic Reference",
+    "version": "1.0.0",
+    "description": "A dense, scholarly reference layout with compact navigation, serif typography and an alphabetical index feel.",
+    "defaults": {
+        "colors": { "primary": "#23436b", "accent": "#a37b2c", "background": "#fbfaf6", "text": "#20201d" },
+        "typography": { "headingFont": "serif", "bodyFont": "serif", "baseSize": 17, "lineHeight": 1.65 },
+        "layout": { "contentWidth": 1120, "density": "compact", "sidebar": true },
+        "carousel": { "autoplay": false, "transition": "fade", "showCaptions": true },
+        "accessibility": { "reduceMotion": true, "contrast": "normal" }
+    }
+}

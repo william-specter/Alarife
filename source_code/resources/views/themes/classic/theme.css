@@ -1,0 +1,144 @@
+/* Classic Reference — dense, scholarly, quiet authority. */
+
+body {
+    background-image:
+        radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--site-accent) 6%, transparent), transparent 46%),
+        linear-gradient(var(--site-bg), var(--site-bg));
+}
+
+.site-header {
+    background: var(--site-bg);
+    backdrop-filter: none;
+    border-bottom: 3px double var(--site-line);
+}
+
+.site-header__inner {
+    min-height: 4.8rem;
+}
+
+.site-brand__name {
+    font-size: 1.55rem;
+    letter-spacing: -0.03em;
+}
+
+.site-brand__name::first-letter {
+    color: var(--site-primary);
+}
+
+.site-nav a {
+    font-size: 0.74rem;
+}
+
+.home-intro {
+    border-bottom: 3px double var(--site-line);
+    padding-bottom: 2rem;
+}
+
+.home-intro h1 {
+    font-weight: 500;
+    letter-spacing: -0.025em;
+}
+
+.home-intro__meta {
+    border-top: 1px solid var(--site-primary);
+}
+
+.section-heading {
+    border-bottom: 1px solid var(--site-primary);
+}
+
+.section-heading h2 {
+    font-variant: small-caps;
+    letter-spacing: 0.02em;
+}
+
+.topic-card {
+    border: 0;
+    border-top: 1px solid var(--site-line);
+    border-radius: 0;
+    padding: 1rem 0 0;
+    background: transparent;
+}
+
+.topic-card:hover {
+    border-color: var(--site-primary);
+    transform: none;
+}
+
+.topic-card__index {
+    font-variant: small-caps;
+    letter-spacing: 0.16em;
+}
+
+.article-card {
+    border-top: 1px solid var(--site-primary);
+}
+
+.article-card__media {
+    border-radius: 0;
+}
+
+.article-card h3 {
+    font-weight: 500;
+}
+
+.topic-index-list a {
+    font-family: var(--site-font-heading);
+}
+
+.topic-index-list li:last-child {
+    border-bottom: 0;
+}
+
+.reader-sidebar h2 {
+    font-variant: small-caps;
+}
+
+.reader-sidebar {
+    border-left: 1px solid var(--site-line);
+}
+
+.article-header h1 {
+    font-weight: 500;
+}
+
+.article-body {
+    font-size: 1.04rem;
+}
+
+.article-body > p:first-of-type::first-letter {
+    font-size: 3.6em;
+    color: var(--site-primary);
+}
+
+.article-body h2 {
+    font-variant: small-caps;
+    border-bottom: 1px solid var(--site-line);
+    padding-bottom: 0.25em;
+}
+
+.toc a {
+    font-size: 0.82rem;
+}
+
+.callout {
+    border-radius: 0;
+    border-left-width: 3px;
+    background: color-mix(in srgb, var(--site-surface-strong) 60%, var(--site-bg));
+}
+
+.site-footer {
+    border-top: 3px double var(--site-line);
+}
+
+.site-footer strong {
+    font-weight: 500;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 900px) {
+    .site-header {
+        border-bottom-width: 1px;
+    }
+}

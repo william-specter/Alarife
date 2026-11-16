@@ -1,0 +1,13 @@
+{
+    "key": "editorial",
+    "name": "Editorial Magazine",
+    "version": "1.0.0",
+    "description": "Warm paper, oversized serif display and asymmetric covers for immersive long-form reading.",
+    "defaults": {
+        "colors": { "primary": "#8c2f24", "accent": "#bd8a3c", "background": "#f4ede2", "text": "#211a15" },
+        "typography": { "headingFont": "serif", "bodyFont": "serif", "baseSize": 18, "lineHeight": 1.75 },
+        "layout": { "contentWidth": 1180, "density": "comfortable", "sidebar": false },
+        "carousel": { "autoplay": false, "transition": "fade", "showCaptions": true },
+        "accessibility": { "reduceMotion": true, "contrast": "normal" }
+    }
+}

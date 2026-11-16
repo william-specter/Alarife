@@ -1,0 +1,232 @@
+/* Contemporary Dark — deep space, luminous accents, precision type. */
+
+body {
+    background-color: var(--site-bg);
+    background-image:
+        radial-gradient(ellipse at 18% -8%, color-mix(in srgb, var(--site-primary) 26%, transparent), transparent 46%),
+        radial-gradient(ellipse at 82% 2%, color-mix(in srgb, var(--site-accent) 12%, transparent), transparent 40%);
+    background-repeat: no-repeat;
+}
+
+.site-header {
+    background: color-mix(in srgb, var(--site-bg) 82%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--site-text) 12%, transparent);
+}
+
+.site-header__inner {
+    min-height: 4.6rem;
+}
+
+.site-brand__name {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+}
+
+.site-brand__name::before {
+    content: '✦';
+    color: var(--site-accent);
+    margin-right: 0.35rem;
+    font-size: 0.8em;
+}
+
+.site-nav a {
+    font-size: 0.72rem;
+    letter-spacing: 0.13em;
+    opacity: 0.7;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+    color: var(--site-accent);
+}
+
+.site-header .search-form {
+    background: color-mix(in srgb, var(--site-text) 6%, transparent);
+    border-color: color-mix(in srgb, var(--site-text) 16%, transparent);
+}
+
+.site-header .search-form button {
+    background: var(--site-primary);
+    color: #06101f;
+}
+
+.home-intro {
+    margin-top: 1.2rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--site-text) 14%, transparent);
+    padding-bottom: 2rem;
+}
+
+.home-intro h1 {
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    background: linear-gradient(100deg, var(--site-text), var(--site-primary) 60%, var(--site-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.home-intro__lede {
+    color: color-mix(in srgb, var(--site-text) 62%, transparent);
+}
+
+.home-intro__meta {
+    border-top: 1px solid color-mix(in srgb, var(--site-text) 18%, transparent);
+    color: color-mix(in srgb, var(--site-text) 58%, transparent);
+}
+
+.home-intro__meta strong {
+    color: var(--site-accent);
+}
+
+.cover-section {
+    margin-top: 1.6rem;
+}
+
+.cover-hero {
+    border: 1px solid color-mix(in srgb, var(--site-text) 14%, transparent);
+}
+
+.cover-carousel,
+.cover-card,
+.topic-card,
+.article-card__media,
+.content-image img,
+.callout {
+    border-radius: var(--site-radius);
+}
+
+.section-heading {
+    border-bottom: 1px solid color-mix(in srgb, var(--site-text) 18%, transparent);
+}
+
+.section-heading h2 {
+    font-weight: 600;
+}
+
+.article-card {
+    border-top: 1px solid color-mix(in srgb, var(--site-text) 16%, transparent);
+}
+
+.article-card h3 a {
+    color: var(--site-text);
+}
+
+.article-card h3 a:hover {
+    color: var(--site-accent);
+}
+
+.article-card__topic {
+    color: var(--site-accent);
+}
+
+.topic-card {
+    background: color-mix(in srgb, var(--site-text) 4%, transparent);
+    border-color: color-mix(in srgb, var(--site-text) 14%, transparent);
+}
+
+.topic-card:hover {
+    border-color: var(--site-accent);
+    background: color-mix(in srgb, var(--site-primary) 10%, transparent);
+}
+
+.topic-card__index {
+    color: var(--site-accent);
+}
+
+.article-header h1 {
+    font-weight: 600;
+    letter-spacing: -0.04em;
+}
+
+.article-body {
+    color: color-mix(in srgb, var(--site-text) 88%, transparent);
+}
+
+.article-body > p:first-of-type::first-letter {
+    color: var(--site-accent);
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+    color: var(--site-text);
+}
+
+.article-body a {
+    color: var(--site-accent);
+}
+
+.article-body blockquote {
+    border-left-color: var(--site-primary);
+    color: var(--site-text);
+}
+
+.article-body code {
+    background: color-mix(in srgb, var(--site-text) 10%, transparent);
+    color: var(--site-accent);
+}
+
+.article-body th {
+    background: color-mix(in srgb, var(--site-text) 7%, transparent);
+}
+
+.article-body th,
+.article-body td {
+    border-color: color-mix(in srgb, var(--site-text) 14%, transparent);
+}
+
+.article-side {
+    border-left: 1px solid color-mix(in srgb, var(--site-text) 14%, transparent);
+}
+
+.toc a:hover {
+    color: var(--site-accent);
+    border-left-color: var(--site-accent);
+}
+
+.toc a {
+    color: color-mix(in srgb, var(--site-text) 58%, transparent);
+}
+
+.callout {
+    background: color-mix(in srgb, var(--site-primary) 8%, transparent);
+    border-color: color-mix(in srgb, var(--site-text) 14%, transparent);
+}
+
+.callout__title {
+    color: var(--site-accent);
+}
+
+.prev-next a {
+    background: color-mix(in srgb, var(--site-text) 4%, transparent);
+    border-color: color-mix(in srgb, var(--site-text) 16%, transparent);
+}
+
+.prev-next a:hover {
+    border-color: var(--site-accent);
+}
+
+.site-footer {
+    border-top: 1px solid color-mix(in srgb, var(--site-text) 14%, transparent);
+    color: color-mix(in srgb, var(--site-text) 55%, transparent);
+}
+
+.site-footer strong {
+    color: var(--site-text);
+}
+
+.site-footer a {
+    color: color-mix(in srgb, var(--site-text) 60%, transparent);
+}
+
+.site-footer__bottom {
+    border-top-color: color-mix(in srgb, var(--site-text) 12%, transparent);
+}
+
+.search-result h2 a {
+    color: var(--site-text);
+}
+
+.search-result h2 a:hover {
+    color: var(--site-accent);
+}

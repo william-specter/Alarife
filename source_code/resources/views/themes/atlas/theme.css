@@ -1,0 +1,271 @@
+/* Illustrated Atlas — cartographic surfaces, legend navigation. */
+
+body {
+    background-color: var(--site-bg);
+    background-image:
+        radial-gradient(circle at 18% 22%, color-mix(in srgb, var(--site-primary) 7%, transparent) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 64% 8%, color-mix(in srgb, var(--site-primary) 6%, transparent) 0 1px, transparent 1.5px),
+        linear-gradient(180deg, color-mix(in srgb, var(--site-primary) 5%, transparent), transparent 28rem);
+    background-size:
+        26px 26px,
+        34px 34px,
+        auto;
+}
+
+.site-header {
+    background: var(--site-primary);
+    border-bottom: 0;
+    backdrop-filter: none;
+}
+
+.site-header a,
+.site-header .site-brand,
+.site-header .site-brand__name,
+.site-header .site-nav a,
+.site-header .site-actions button {
+    color: var(--site-bg);
+}
+
+.site-header .site-brand__tag {
+    color: color-mix(in srgb, var(--site-bg) 68%, transparent);
+}
+
+.site-brand__name::before {
+    content: '◈ ';
+    color: var(--site-accent);
+}
+
+.site-header .search-form {
+    background: color-mix(in srgb, var(--site-bg) 12%, transparent);
+    border-color: color-mix(in srgb, var(--site-bg) 34%, transparent);
+}
+
+.site-header .search-form input {
+    color: var(--site-bg);
+}
+
+.site-header .search-form input::placeholder {
+    color: color-mix(in srgb, var(--site-bg) 60%, transparent);
+}
+
+.site-header .search-form button {
+    background: var(--site-accent);
+    color: #1d1a10;
+}
+
+.nav-toggle {
+    color: var(--site-bg);
+    border-color: color-mix(in srgb, var(--site-bg) 40%, transparent);
+}
+
+.cover-section {
+    margin-top: 1.4rem;
+}
+
+.cover-hero {
+    background: var(--site-primary);
+}
+
+.cover-hero__copy h1 {
+    font-size: clamp(2.6rem, 1.8rem + 3.6vw, 5.2rem);
+}
+
+.cover-editorial__note {
+    background: var(--site-primary);
+    color: var(--site-bg);
+    border: 0;
+}
+
+.cover-editorial__note p,
+.cover-editorial__note .carousel-caption {
+    color: var(--site-bg);
+}
+
+.home-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid color-mix(in srgb, var(--site-primary) 30%, transparent);
+    background: color-mix(in srgb, var(--site-primary) 88%, #0a1c22);
+    color: var(--site-bg);
+    margin-top: 1.4rem;
+}
+
+.home-intro > * {
+    padding: clamp(1.5rem, 3vw, 2.6rem);
+}
+
+.home-intro h1 {
+    color: var(--site-bg);
+}
+
+.home-intro__lede {
+    color: color-mix(in srgb, var(--site-bg) 82%, transparent);
+}
+
+.home-intro__meta {
+    border-top: 1px solid color-mix(in srgb, var(--site-bg) 30%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--site-bg) 20%, transparent);
+    color: color-mix(in srgb, var(--site-bg) 75%, transparent);
+}
+
+.home-intro__meta strong {
+    color: var(--site-accent);
+    font-size: 1.5rem;
+}
+
+.section-heading {
+    border-bottom: 1px solid var(--site-primary);
+}
+
+.section-heading h2 {
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+}
+
+.article-card {
+    border-top: 1px solid color-mix(in srgb, var(--site-primary) 35%, transparent);
+}
+
+.article-card__topic {
+    color: var(--site-primary);
+}
+
+.topic-grid {
+    gap: 1rem;
+}
+
+.topic-card {
+    border: 1px solid color-mix(in srgb, var(--site-primary) 25%, transparent);
+    background: color-mix(in srgb, var(--site-surface) 70%, transparent);
+    border-radius: 0;
+    position: relative;
+    padding-top: 1.8rem;
+}
+
+.topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0.8rem;
+    right: 0.9rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--site-accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--site-accent) 20%, transparent);
+}
+
+.topic-card:hover {
+    background: var(--site-primary);
+    color: var(--site-bg);
+    transform: none;
+}
+
+.topic-card:hover p,
+.topic-card:hover .topic-card__meta,
+.topic-card:hover .topic-card__index {
+    color: color-mix(in srgb, var(--site-bg) 78%, transparent);
+}
+
+.topic-card__index {
+    font-family: var(--site-font-body);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.topic-index-list {
+    border: 1px solid color-mix(in srgb, var(--site-primary) 25%, transparent);
+    padding: 1rem 1.2rem;
+    background: color-mix(in srgb, var(--site-surface) 60%, transparent);
+}
+
+.reader-sidebar {
+    border-left: 1px solid color-mix(in srgb, var(--site-primary) 25%, transparent);
+}
+
+.article-header {
+    border-bottom: 1px solid color-mix(in srgb, var(--site-primary) 30%, transparent);
+    padding-bottom: 1.2rem;
+}
+
+.article-body {
+    font-size: 1rem;
+}
+
+.article-body > p:first-of-type::first-letter {
+    color: var(--site-primary);
+}
+
+.article-body h2 {
+    font-variant: small-caps;
+    border-bottom: 1px solid color-mix(in srgb, var(--site-primary) 25%, transparent);
+    padding-bottom: 0.25em;
+}
+
+.article-body h3::before {
+    content: '▸ ';
+    color: var(--site-accent);
+}
+
+.callout {
+    border-radius: 0;
+    background: color-mix(in srgb, var(--site-primary) 5%, var(--site-surface));
+}
+
+.prev-next a {
+    border-radius: 0;
+    border-color: color-mix(in srgb, var(--site-primary) 30%, transparent);
+}
+
+.site-footer {
+    background: var(--site-primary);
+    color: color-mix(in srgb, var(--site-bg) 75%, transparent);
+    border-top: 0;
+}
+
+.site-footer strong,
+.site-footer a {
+    color: var(--site-bg);
+}
+
+.site-footer__bottom {
+    border-top-color: color-mix(in srgb, var(--site-bg) 22%, transparent);
+}
+
+@media (max-width: 900px) {
+    .home-intro {
+        grid-template-columns: 1fr;
+    }
+
+    .home-intro__meta {
+        border-left: 0;
+    }
+}
+
+.site-header__inner {
+    flex-wrap: wrap;
+    gap: 0.7rem 1.6rem;
+    padding-block: 0.8rem;
+}
+
+.site-nav--legend {
+    width: 100%;
+    gap: 1.4rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid color-mix(in srgb, var(--site-bg) 18%, transparent);
+    font-size: 0.72rem;
+}
+
+.site-nav--legend a {
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+}
+
+@media (max-width: 900px) {
+    .site-nav--legend {
+        border-top: 0;
+        padding-top: 0;
+    }
+}

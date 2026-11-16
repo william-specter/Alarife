@@ -1,0 +1,13 @@
+{
+    "key": "nocturne",
+    "name": "Contemporary Dark",
+    "version": "1.0.0",
+    "description": "Deep navy surfaces, luminous accents and high-contrast typography for a contemporary reading experience.",
+    "defaults": {
+        "colors": { "primary": "#7aa2ff", "accent": "#5eead4", "background": "#0b0e14", "text": "#eef1f6" },
+        "typography": { "headingFont": "sans", "bodyFont": "sans", "baseSize": 17, "lineHeight": 1.72 },
+        "layout": { "contentWidth": 1120, "density": "comfortable", "sidebar": true },
+        "carousel": { "autoplay": false, "transition": "fade", "showCaptions": true },
+        "accessibility": { "reduceMotion": true, "contrast": "high" }
+    }
+}

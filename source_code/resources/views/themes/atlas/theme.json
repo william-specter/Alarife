@@ -1,0 +1,13 @@
+{
+    "key": "atlas",
+    "name": "Illustrated Atlas",
+    "version": "1.0.0",
+    "description": "Cartographic colour, a legend-like sidebar and map-toned surfaces for visual exploration.",
+    "defaults": {
+        "colors": { "primary": "#1f4e5f", "accent": "#c9a227", "background": "#f1eee5", "text": "#24303a" },
+        "typography": { "headingFont": "serif", "bodyFont": "sans", "baseSize": 17, "lineHeight": 1.68 },
+        "layout": { "contentWidth": 1200, "density": "comfortable", "sidebar": true },
+        "carousel": { "autoplay": false, "transition": "slide", "showCaptions": true },
+        "accessibility": { "reduceMotion": true, "contrast": "normal" }
+    }
+}
