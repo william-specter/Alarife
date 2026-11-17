@@ -71,6 +71,20 @@ Access rules:
   private.
 - Draft articles return 404 even on a published encyclopedia.
 
+## 1.1 Broadcasting endpoints
+
+| Method | URI | Name | Access |
+| --- | --- | --- | --- |
+| POST | `/broadcasting/auth` | broadcasting.auth | private channel authorization |
+
+Channels are authorized server-side in `routes/channels.php`:
+
+- `private-encyclopedia.{id}`: owner/editor/author member or platform admin.
+- `private-user.{id}`: the authenticated user only.
+
+Realtime events only contain IDs and safe metadata, never article bodies or private asset
+URLs. If Reverb is unavailable, broadcasting failures are logged and writes still succeed.
+
 ## 2. Authorization model
 
 Laravel policies + `Gate::before` for platform admins.

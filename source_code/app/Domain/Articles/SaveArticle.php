@@ -6,6 +6,7 @@ use App\Domain\Activity\RecordActivity;
 use App\Domain\Content\ContentHtmlRenderer;
 use App\Domain\Content\ContentValidator;
 use App\Domain\Content\Slug;
+use App\Domain\Realtime\Realtime;
 use App\Models\Article;
 use App\Models\ArticleRedirect;
 use App\Models\ArticleRevision;
@@ -84,6 +85,14 @@ class SaveArticle
                 ($this->activity)($article->encyclopedia, $user, 'article.saved', $article, [
                     'title' => $article->title,
                     'revision' => $article->revision_number,
+                ]);
+                app(Realtime::class)->encyclopedia($article->encyclopedia, 'article.saved', [
+                    'article_id' => $article->id,
+                    'title' => $article->title,
+                    'status' => $article->status,
+                    'revision' => $article->revision_number,
+                    'editor_id' => $user->id,
+                    'editor' => $user->name,
                 ]);
             }
 

@@ -9,6 +9,10 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
+        @if (config('broadcasting.default') === 'reverb')
+            <meta name="reverb-key" content="{{ config('broadcasting.connections.reverb.key') }}">
+            <meta name="reverb-port" content="{{ config('broadcasting.connections.reverb.port', 8080) }}">
+        @endif
         @routes
         @vite(['resources/js/app.ts'])
         @inertiaHead

@@ -23,7 +23,7 @@ internals.
 │  Actions (use-cases) · Domain services · Events · Jobs                     │
 └───────────────┬────────────────────────────────────────────────────────────┘
 │ Infrastructure                                                             │
-│  PostgreSQL · Redis (cache/queues) · S3-compatible storage · ZIP builder   │
+│  PostgreSQL · Octane/FrankenPHP · Reverb · optional Redis · S3/ZIP          │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -72,7 +72,8 @@ GET /{encyclopedia}/articles/{slug}
   → HTML response with cache headers keyed by release version
 ```
 Readers never use the authoring JSON endpoints. Reader pages are server rendered so that
-the same Blade theme can be rendered to static files by the exporter.
+the same Blade theme can be rendered to static files by the exporter. Octane workers serve
+these requests; no request-scoped state is cached between requests.
 
 ### 3.3 Publication
 ```
@@ -110,7 +111,7 @@ Worker
 | JSON content source of truth | Enables multiple themes and future formats; HTML is disposable output. |
 | Immutable snapshots | Reproducible exports, stable archives and safe caching. |
 | PostgreSQL JSONB | Structured documents + relational integrity + full-text search in one store. |
-| Redis queues | Export work is bursty and must never block web requests. |
+| Database/Redis queues | Export work is bursty and must never block web requests. |
 | S3-compatible storage | Media and archives outlive application containers and can be CDN-fronted. |
 
 ## 5. Version matrix (as implemented)
@@ -131,8 +132,12 @@ combination. This deviation is recorded in the roadmap.
 | shadcn-vue | — | radix-vue primitives | Starter kit components, extended locally |
 | Editor | Tiptap | Tiptap 3 | JSON storage |
 | Database | PostgreSQL | PostgreSQL 18 | JSONB, FTS |
-| Cache/queue | Redis | Redis (database fallback in tests) | Configurable |
+| App server | Octane + FrankenPHP | Octane 2 + FrankenPHP | Worker-based HTTP |
+| Real-time | Reverb | Reverb | WebSockets, no Redis required |
+| Cache/queue | Redis | Database (Redis optional) | Redis can be enabled later |
 | Package manager | pnpm | pnpm 10 (pinned) | `packageManager` field |
+| App server | Octane + FrankenPHP | Octane 2 + FrankenPHP | Worker-based HTTP |
+| Real-time | Reverb | Reverb 1 | WebSockets, Redis optional |
 | Tests | Pest/PHPUnit + Vitest | PHPUnit + Vitest | Starter kit defaults |
 
 ## 6. Cross-cutting concerns

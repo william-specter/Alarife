@@ -2,53 +2,71 @@
 
 ## 1. Local development
 
-Recommended Docker services mirror production, but Alarife runs natively too.
+There are two supported execution paths. The full command reference is in
+[13-runtime-realtime-and-execution.md](13-runtime-realtime-and-execution.md).
+
+### Composer (one command)
 
 ```bash
-# one command: server + queue + logs + Vite (pnpm)
 cd source_code
+php artisan octane:install --server=frankenphp   # one-time local binary
 composer run dev
 ```
 
-`composer run dev` uses `pnpm exec concurrently` (never npm) and starts Laravel, the queue
-listener, Pail and Vite together. For separate processes:
+`composer run dev` starts Octane/FrankenPHP, the queue listener, Reverb, Pail and Vite with
+`pnpm exec concurrently` (never npm). For separate processes:
 
 ```bash
-php artisan serve
+php artisan octane:start --server=frankenphp --host=127.0.0.1 --port=8000
 php artisan queue:work --queue=default,exports,media
+php artisan reverb:start --host=127.0.0.1 --port=8080
 pnpm dev
 ```
 
-Docker (application + queue + services):
+### Docker (existing shared services, no service image pulls)
+
+The environment already provides PostgreSQL 18, Redis and Keycloak containers through the
+`sourcecode` Docker project. The Alarife compose file:
+
+- joins the existing `sourcecode_default` network;
+- uses the existing PostgreSQL (`dev_user` / `dev_password`, database `alarife`);
+- does **not** define or pull PostgreSQL, Redis, Keycloak or MinIO images;
+- runs `app` (Octane + FrankenPHP), `queue` and `reverb` from the Alarife image.
 
 ```bash
+docker start sourcecode-postgres-1               # existing container
+docker exec sourcecode-postgres-1 psql -U dev_user -d chargman \
+  -c "CREATE DATABASE alarife OWNER dev_user;"    # first time only
 docker compose up -d --build
-docker compose exec -u www-data app php artisan db:seed --force
-# http://localhost:8000
+docker compose exec -u www-data app php artisan migrate:fresh --seed
 ```
 
-The Docker image builds assets with pnpm, installs Composer production dependencies and runs
-PHP-FPM/CLI with a queue worker. `RUN_SEED=1 docker compose up` performs the seed on first
-boot. Postgres/Redis are exposed on 55433/6381 to avoid conflicts with host services. MinIO is
-optional and runs with `--profile object-storage`; the default stack uses local storage.
+App: `http://localhost:8000` · Reverb: `http://localhost:8080`. Keycloak and SSO are not used;
+Redis is not required by the default configuration.
 
-Environment essentials:
+### Environment essentials
 
 ```dotenv
 APP_URL=http://localhost:8000
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
-DB_PORT=5432
+DB_PORT=5434
 DB_DATABASE=alarife
-DB_USERNAME=alarife
-DB_PASSWORD=secret
-CACHE_STORE=redis
-QUEUE_CONNECTION=redis
-SESSION_DRIVER=redis
-FILESYSTEM_DISK=public
-EXPORT_DISK=local
-EXPORT_RETENTION_DAYS=30
+DB_USERNAME=dev_user
+DB_PASSWORD=dev_password
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+SESSION_DRIVER=database
+BROADCAST_CONNECTION=reverb
+OCTANE_SERVER=frankenphp
+REVERB_HOST=localhost
+REVERB_PORT=8080
+REVERB_SERVER_HOST=0.0.0.0
 ```
+
+Redis is optional. To opt in later, set `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`,
+`SESSION_DRIVER=redis`, `REDIS_CLIENT=predis` and the `REDIS_*` variables. Reverb works
+without Redis for a single node.
 
 `local` is used for snapshots and archives (private); `public`/S3 for media. In development,
 `php artisan storage:link` exposes media. In production media is served from S3/CDN.
@@ -59,16 +77,19 @@ EXPORT_RETENTION_DAYS=30
 Cloudflare (CDN/WAF)
         │
 Load balancer
-  ├── app containers (PHP-FPM + Nginx, stateless)
+  ├── Octane/FrankenPHP app containers (stateless)
+  ├── Reverb WebSocket containers (port 8080)
   ├── queue: default (notifications, activity)
   ├── queue: exports (dedicated workers)
   └── scheduler (php artisan schedule:work)
         │
-Managed PostgreSQL (PITR)   Managed Redis   S3/R2 (media + archives)
+Managed PostgreSQL (PITR)   Optional Redis   S3/R2 (media + archives)
 ```
 
 - Application containers are immutable; assets built in CI.
-- No local state: sessions/cache/queues in Redis, media/archives in object storage.
+- Octane workers are stateless; no request-scoped state is cached between requests.
+- Sessions/cache/queue default to PostgreSQL; Redis is an optional scaling layer.
+- Reverb is the broadcasting transport; Redis is only needed for multi-node Reverb scaling.
 - Export workers have larger disk/temp space and a 15-minute job timeout.
 - Reader traffic never touches the export queue.
 

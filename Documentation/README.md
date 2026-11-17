@@ -27,6 +27,7 @@ editions, and export a complete self-contained static website that works offline
 | [10-deployment-and-operations.md](10-deployment-and-operations.md) | Local stack, production topology, CI/CD, operations |
 | [11-implementation-roadmap.md](11-implementation-roadmap.md) | Phases, current status, known deviations, next work |
 | [12-ui-review.md](12-ui-review.md) | Playwright UI/UX review log, findings, fixes and screenshots |
+| [13-runtime-realtime-and-execution.md](13-runtime-realtime-and-execution.md) | Octane/FrankenPHP, Reverb, Redis-optional runtime, Composer and Docker execution |
 
 Reference material supplied with the brief lives in:
 
@@ -48,10 +49,13 @@ pnpm install --frozen-lockfile
 cp .env.example .env            # if .env is absent
 php artisan key:generate
 php artisan migrate --seed
-pnpm dev                        # Vite
-php artisan serve               # in a second terminal
-php artisan queue:work          # in a third terminal (exports)
+php artisan octane:install --server=frankenphp   # one-time local binary
+
+composer run dev   # Octane/FrankenPHP + Reverb + queue + logs + Vite
 ```
+
+Docker execution (Octane/FrankenPHP + Reverb, using the existing PostgreSQL container) is
+documented in [13-runtime-realtime-and-execution.md](13-runtime-realtime-and-execution.md).
 
 Demo credentials are printed by the seeder (`admin@alarife.test` / `password`).
 

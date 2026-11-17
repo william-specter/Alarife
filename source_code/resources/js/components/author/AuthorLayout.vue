@@ -3,6 +3,7 @@ import Toaster from '@/components/Toaster.vue';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import { useToast } from '@/composables/useToast';
+import { getEcho } from '@/echo';
 import type { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import {
@@ -20,7 +21,7 @@ import {
     Sparkles,
 } from 'lucide-vue-next';
 import type { Component } from 'vue';
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { route } from 'ziggy-js';
 
 interface EncyclopediaContext {
@@ -48,6 +49,28 @@ const user = page.props.auth.user;
 const { pushToast } = useToast();
 const mobileOpen = ref(false);
 const dark = ref(document.documentElement.classList.contains('dark'));
+const live = ref(false);
+let liveConnection: any = null;
+let stateHandler: ((state: { current: string }) => void) | null = null;
+
+onMounted(() => {
+    const echo = getEcho();
+    const connection = (echo as any)?.connector?.pusher?.connection;
+    if (!connection) return;
+
+    liveConnection = connection;
+    live.value = connection.state === 'connected';
+    stateHandler = (state) => {
+        live.value = state.current === 'connected';
+    };
+    connection.bind('state_change', stateHandler);
+});
+
+onBeforeUnmount(() => {
+    if (liveConnection && stateHandler) {
+        liveConnection.unbind('state_change', stateHandler);
+    }
+});
 
 watch(
     () => page.props.flash,
@@ -288,6 +311,14 @@ const previewUrl = computed(() => (props.encyclopedia ? route('author.preview', 
                 </nav>
 
                 <div class="ml-auto flex items-center gap-1">
+                    <span
+                        v-if="live"
+                        class="mr-1 hidden items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:inline-flex"
+                        title="Realtime connection active"
+                    >
+                        <span class="size-1.5 animate-pulse rounded-full bg-emerald-500" aria-hidden="true" />
+                        Live
+                    </span>
                     <button
                         class="btn-ghost size-9 p-0"
                         type="button"

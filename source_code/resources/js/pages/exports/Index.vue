@@ -2,6 +2,7 @@
 import AuthorLayout from '@/components/author/AuthorLayout.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useEncyclopediaRealtime } from '@/composables/useRealtime';
 import { formatBytes, formatDateTime } from '@/lib/format';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { Archive, CheckCircle2, Download, HardDrive, Loader2, RefreshCw, ShieldCheck, WifiOff } from 'lucide-vue-next';
@@ -41,6 +42,27 @@ const props = defineProps<{
 }>();
 
 const rows = ref<ExportRow[]>(JSON.parse(JSON.stringify(props.exports)));
+
+useEncyclopediaRealtime(props.encyclopedia.id, (event) => {
+    if (event.type === 'export.updated') {
+        const target = rows.value.find((row) => row.id === Number(event.payload.export_id));
+        if (target) {
+            target.status = event.payload.status;
+            target.progress = event.payload.progress;
+            target.error_message = event.payload.error_message;
+            target.archive_size = event.payload.archive_size;
+            target.checksum = event.payload.checksum;
+            target.download_url = event.payload.download_url;
+            target.completed_at = event.payload.completed_at ?? target.completed_at;
+        } else {
+            router.reload({ only: ['exports', 'latestRelease', 'counts'] });
+        }
+    }
+
+    if (event.type === 'activity.created' && event.payload.action === 'export.requested') {
+        router.reload({ only: ['exports', 'latestRelease', 'counts'] });
+    }
+});
 const form = useForm({
     source: (props.latestRelease ? 'release' : 'draft') as 'release' | 'draft',
     include_search: true,
@@ -54,7 +76,6 @@ const active = computed(() => rows.value.filter((row) => row.status === 'queued'
 
 function requestExport() {
     form.post(route('author.exports.store', props.encyclopedia.slug), {
-        preserveScroll: true,
         onSuccess: () => {
             router.reload({ only: ['exports'] });
         },
@@ -95,7 +116,7 @@ watch(
 );
 
 onMounted(() => {
-    poller = window.setInterval(poll, 2500);
+    poller = window.setInterval(poll, 10000);
 });
 onBeforeUnmount(() => {
     if (poller) window.clearInterval(poller);

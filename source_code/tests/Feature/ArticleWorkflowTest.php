@@ -44,6 +44,27 @@ class ArticleWorkflowTest extends TestCase
         $this->assertSame('Fresh title', $article->fresh()->title);
     }
 
+    public function test_explicit_autosave_creates_a_revision(): void
+    {
+        $owner = User::factory()->create();
+        $encyclopedia = $this->makeEncyclopedia($owner);
+        $topic = $this->makeTopic($encyclopedia);
+        $article = $this->makeArticle($encyclopedia, $topic);
+
+        $this->actingAs($owner)
+            ->patchJson("/author/{$encyclopedia->slug}/articles/{$article->id}/autosave", [
+                'title' => $article->title,
+                'slug' => $article->slug,
+                'content' => $this->doc([$this->paragraph('Explicit save body.')]),
+                'revision_number' => 1,
+                'explicit' => true,
+            ])
+            ->assertOk();
+
+        $this->assertSame(2, $article->fresh()->revision_number);
+        $this->assertSame(1, $article->fresh()->revisions()->count());
+    }
+
     public function test_published_articles_are_readable_and_drafts_are_not(): void
     {
         $owner = User::factory()->create();

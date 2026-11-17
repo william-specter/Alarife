@@ -4,6 +4,7 @@ import EmptyState from '@/components/EmptyState.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import StatTile from '@/components/StatTile.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useUserRealtime } from '@/composables/useRealtime';
 import { formatDate, relativeTime, wordLabel } from '@/lib/format';
 import type { SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
@@ -47,6 +48,14 @@ const props = defineProps<{
 const page = usePage<SharedData>();
 const user = page.props.auth.user;
 const search = ref(props.filters.q);
+let refreshTimer: number | null = null;
+
+useUserRealtime(user.id, () => {
+    if (refreshTimer) window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(() => {
+        router.reload({ only: ['encyclopedias', 'activity', 'stats'] });
+    }, 250);
+});
 
 function submitSearch() {
     router.get(route('dashboard'), search.value ? { q: search.value } : {}, { preserveState: true, replace: true });

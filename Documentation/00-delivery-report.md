@@ -30,7 +30,8 @@ dashboard and the offline export opened directly from disk.
 ## 2. Implementation inventory
 
 ### Platform
-- Laravel 12 modular monolith, Inertia 2, Vue 3 + TypeScript, Tailwind CSS.
+- Laravel 12 modular monolith, Octane + FrankenPHP, Inertia 2, Vue 3 + TypeScript, Tailwind CSS.
+- Laravel Reverb real-time broadcasting (Redis optional) with private encyclopedia/user channels.
 - PostgreSQL schema (JSONB editor content, full-text search vector), Redis-ready cache/queue,
   S3-compatible storage abstractions, local-disk defaults.
 - Demo seeder with five encyclopedias, one per theme, rich articles, cross-references,
@@ -61,49 +62,47 @@ dashboard and the offline export opened directly from disk.
 ## 3. Execution paths
 
 ### Composer (single command)
-`composer run dev` was changed from `npm`/`npx` to **pnpm**:
-
-```
-pnpm exec concurrently ... "pnpm dev"
-```
-
-Verified: it starts Laravel, the queue listener, Pail and Vite together. `composer test`
-also runs PHPUnit + Vitest.
+`composer run dev` uses **pnpm** and starts Octane/FrankenPHP, the queue listener, Reverb,
+Pail and Vite together. `composer test` runs PHPUnit + Vitest. Verified end-to-end.
 
 ### Docker
-Added a production-style `Dockerfile` (pnpm asset build, Composer vendor stage, PHP 8.4 with
-`pdo_pgsql`, `zip`, `intl`, `opcache`, predis) and a `compose.yaml` stack with:
-- `app` (built-in server on `localhost:8000`, migrations/entrypoint)
-- `queue` (same image, dedicated workers, shared media/private volumes)
-- `postgres` (healthy, port 55433)
-- `redis` (port 6381)
-- optional MinIO (`--profile object-storage`)
+Added a production-style `Dockerfile` based on **`dunglas/frankenphp:php8.4`** (pnpm asset
+build, Composer vendor stage, `pdo_pgsql`, `zip`, `intl`, `opcache`, `pcntl`) and a
+`compose.yaml` stack with `app` (Octane/FrankenPHP), `reverb`, and `queue`.
 
-Verified from clean volumes:
+It deliberately **does not pull PostgreSQL, Redis or Keycloak images**. It joins the existing
+`sourcecode_default` Docker network and uses the already-running PostgreSQL 18 container
+(database `alarife`, user `dev_user`). Redis is optional and Keycloak/SSO is not used.
+
+Verified:
 
 ```bash
-docker compose down -v
 docker compose up -d --build
-docker compose exec -u www-data app php artisan db:seed --force
+docker compose exec -u www-data app php artisan migrate:fresh --seed
 ```
 
-The app returned 200, the reader rendered, 6 cross-references existed and all 3 archives
-completed.
+The app returned 200 through FrankenPHP, the reader rendered, 6 cross-references existed and
+all 3 export archives completed. Reverb served `:8080` and the browser showed the **Live**
+indicator.
 
 ## 4. Verification evidence
 
 | Check | Result |
 | --- | --- |
-| PHPUnit | **54 passed** (189 assertions) |
+| PHPUnit | **57 passed** (196 assertions) |
+| Broadcasting | Reverb channel auth + Live UI verified |
+| JSX/TSX audit | none present; Vue SFC + TypeScript only |
+| Keycloak/SSO | not integrated |
 | Vitest | **3 passed** |
 | `vue-tsc --noEmit` | clean |
 | ESLint / Prettier | clean |
 | Pint | passed |
 | Production asset build | passed |
-| Composer dev with pnpm | verified (single command, all processes) |
+| Composer dev with pnpm | verified (Octane/FrankenPHP + Reverb + queue + Vite) |
 | Docker clean bootstrap + seed + exports | verified |
 | Offline export from `file://` | verified: 3 carousel slides, article images, search result, no console errors |
 | Cross-reference UI | verified: wizard search, selection/note, settings list, reader related works |
+| Real-time | verified: Live indicator, dashboard activity refresh, remote-editor banner, export progress |
 | Mobile navigation | verified at 390×844 |
 
 ## 5. Visual proof index
@@ -121,6 +120,7 @@ All images live in `Documentation/screenshots/`:
 - `reader-nocturne-home.png`
 - `reader-cross-references.png`
 - `export-offline-home.png`
+- `admin-realtime-collaboration.png`, `admin-realtime-export.png`
 
 ## 6. Repository state
 

@@ -7,6 +7,8 @@ reference material in `../../Docs/examples` and to verify exported websites.
   appearance and exports screens at 1440×1000.
 - `capture-docs.mjs` / `references-review.mjs` — capture documentation screenshots
   (including cross-reference flows).
+- `realtime-docker.mjs` — verifies Reverb Live indicator, remote-editor banner and export
+  progress updates against the Docker stack.
 - `offline-test.mjs` — opens an extracted export from `file://`, checks the carousel,
   article rendering and offline search, and reports console errors.
 

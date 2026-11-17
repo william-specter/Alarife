@@ -41,6 +41,13 @@ unit tests but not for search/export feature tests.
 22. Settings reject a private/draft target and roll back the encyclopedia update.
 23. Reader pages render related works from other published encyclopedias.
 24. Publication snapshots and exports pin cross-references and their target URLs.
+25. Broadcasting channel authorization accepts members and rejects outsiders.
+26. Explicit editor saves create a revision; autosaves do not.
+27. Realtime writes remain safe when broadcasting is disabled.
+
+Current suite: **57 PHPUnit tests / 196 assertions**, plus Vitest, TypeScript, build and Pint
+checks. Playwright additionally verified the Live indicator, dashboard refresh,
+remote-editor banner and export progress.
 
 ## 3. Test data
 

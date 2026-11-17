@@ -2,6 +2,7 @@
 import AuthorLayout from '@/components/author/AuthorLayout.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useEncyclopediaRealtime } from '@/composables/useRealtime';
 import { formatBytes, formatDateTime } from '@/lib/format';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { Archive, Check, Circle, Download, Rocket, ShieldCheck, Undo2 } from 'lucide-vue-next';
@@ -28,11 +29,18 @@ const props = defineProps<{
 }>();
 
 const form = useForm({ notes: '' });
+let refreshTimer: number | null = null;
+
+useEncyclopediaRealtime(props.encyclopedia.id, () => {
+    if (refreshTimer) window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(() => {
+        router.reload({ only: ['encyclopedia', 'readiness', 'releases', 'archiveReady'] });
+    }, 300);
+});
 const blocking = computed(() => props.readiness.filter((item) => !item.done && item.blocking));
 
 function publish() {
     form.post(route('author.publishing.store', props.encyclopedia.slug), {
-        preserveScroll: true,
         onSuccess: () => form.reset(),
     });
 }

@@ -9,6 +9,7 @@ use App\Domain\Articles\SaveArticle;
 use App\Domain\Content\ContentHtmlRenderer;
 use App\Domain\Content\ContentMediaHydrator;
 use App\Domain\Content\Slug;
+use App\Domain\Realtime\Realtime;
 use App\Domain\Themes\ThemeRegistry;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
@@ -197,10 +198,11 @@ class ArticleController extends Controller
         abort_unless($article->encyclopedia_id === $encyclopedia->id, 404);
 
         $data = $this->validatePayload($request, $article);
+        $data['explicit'] = $request->boolean('explicit');
         $savedAt = now();
 
         try {
-            ($this->saver)($article, $request->user(), $data, explicit: false);
+            ($this->saver)($article, $request->user(), $data, explicit: $data['explicit']);
         } catch (ConflictHttpException $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
@@ -265,6 +267,11 @@ class ArticleController extends Controller
         $title = $article->title;
         $article->delete();
         app(RecordActivity::class)($encyclopedia, $request->user(), 'article.deleted', null, ['title' => $title]);
+        app(Realtime::class)->encyclopedia($encyclopedia, 'article.deleted', [
+            'article_id' => $article->id,
+            'title' => $title,
+            'editor_id' => $request->user()->id,
+        ]);
 
         return redirect()->route('author.articles.index', $encyclopedia)->with('success', 'Article deleted.');
     }
@@ -312,6 +319,7 @@ class ArticleController extends Controller
             'topic_id' => ['nullable', 'integer'],
             'featured_image_id' => ['nullable', 'integer'],
             'revision_number' => ['required', 'integer', 'min:1'],
+            'explicit' => ['sometimes', 'boolean'],
         ]);
     }
 }

@@ -2,11 +2,13 @@
 import AuthorLayout from '@/components/author/AuthorLayout.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useEncyclopediaRealtime } from '@/composables/useRealtime';
 import EditorToolbar from '@/editor/EditorToolbar.vue';
 import MediaPicker from '@/editor/MediaPicker.vue';
 import TiptapEditor from '@/editor/TiptapEditor.vue';
 import { formatDateTime, relativeTime } from '@/lib/format';
-import { Head, router } from '@inertiajs/vue3';
+import type { SharedData } from '@/types';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { AlertTriangle, ArrowLeft, Check, Clock3, ExternalLink, History, Image as ImageIcon, Loader2, Rocket, Save, Trash2 } from 'lucide-vue-next';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { route } from 'ziggy-js';
@@ -48,6 +50,20 @@ const props = defineProps<{
 
 const editorRef = ref<InstanceType<typeof TiptapEditor> | null>(null);
 const editorInstance = ref<any>(null);
+const authUser = usePage<SharedData>().props.auth.user;
+const remoteNotice = ref<string | null>(null);
+
+useEncyclopediaRealtime(props.encyclopedia.id, (event) => {
+    const articleEvents = ['article.saved', 'article.status', 'article.restored', 'article.deleted'];
+    if (!articleEvents.includes(event.type)) return;
+    if (Number(event.payload.article_id) !== props.article.id) return;
+    if (Number(event.payload.editor_id) === Number(authUser.id)) return;
+
+    remoteNotice.value =
+        event.type === 'article.deleted'
+            ? `${event.payload.editor ?? 'Another editor'} deleted this article.`
+            : `${event.payload.editor ?? 'Another editor'} changed this article (revision ${event.payload.revision ?? '—'}).`;
+});
 const title = ref(props.article.title);
 const slug = ref(props.article.slug);
 const excerpt = ref(props.article.excerpt ?? '');
@@ -156,7 +172,7 @@ function xsrfToken(): string {
     return match ? decodeURIComponent(match[1]) : '';
 }
 
-async function saveNow() {
+async function saveNow(explicit = false) {
     if (timer) {
         window.clearTimeout(timer);
         timer = null;
@@ -172,7 +188,7 @@ async function saveNow() {
                 'X-XSRF-TOKEN': xsrfToken(),
             },
             credentials: 'same-origin',
-            body: JSON.stringify(payload()),
+            body: JSON.stringify({ ...payload(), explicit }),
         });
 
         if (response.status === 409) {
@@ -205,7 +221,7 @@ async function saveNow() {
 
 function publish() {
     if (!props.canPublish) return;
-    saveNow().then(() => {
+    saveNow(true).then(() => {
         router.post(
             props.urls.status,
             { status: 'published' },
@@ -282,7 +298,7 @@ function onKeydown(event: KeyboardEvent) {
     if (!meta) return;
     if (event.key.toLowerCase() === 's') {
         event.preventDefault();
-        saveNow();
+        saveNow(true);
     }
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -356,7 +372,7 @@ onBeforeUnmount(() => {
                     {{ statusLabel }}
                 </span>
                 <a :href="urls.preview" target="_blank" rel="noopener" class="btn-secondary"><ExternalLink class="size-3.5" /> Preview</a>
-                <button class="btn-secondary" type="button" :disabled="saveState === 'saving'" @click="saveNow()">
+                <button class="btn-secondary" type="button" :disabled="saveState === 'saving'" @click="saveNow(true)">
                     <Save class="size-3.5" /> Save
                 </button>
                 <button v-if="canPublish && status !== 'published'" class="btn-primary" type="button" @click="publish">
@@ -367,6 +383,17 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Banners -->
+        <div
+            v-if="remoteNotice"
+            class="mb-4 flex flex-col gap-2 rounded-lg border border-sky-300 bg-sky-50 p-3 text-xs text-sky-900 dark:border-sky-900/60 dark:bg-sky-950/40 dark:text-sky-200 sm:flex-row sm:items-center"
+        >
+            <AlertTriangle class="size-4 shrink-0" />
+            <p class="flex-1">{{ remoteNotice }} Reload before making further changes, or keep editing and resolve the conflict at save time.</p>
+            <div class="flex gap-2">
+                <button class="btn-secondary btn-sm" type="button" @click="remoteNotice = null">Keep editing</button>
+                <button class="btn-primary btn-sm" type="button" @click="reloadPage">Reload article</button>
+            </div>
+        </div>
         <div
             v-if="recovery"
             class="mb-4 flex flex-col gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200 sm:flex-row sm:items-center"
@@ -390,7 +417,7 @@ onBeforeUnmount(() => {
             v-if="saveState === 'error'"
             class="mb-4 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive"
         >
-            <AlertTriangle class="size-4" /> {{ errorMessage }} <button class="ml-auto underline" type="button" @click="saveNow()">Retry</button>
+            <AlertTriangle class="size-4" /> {{ errorMessage }} <button class="ml-auto underline" type="button" @click="saveNow(true)">Retry</button>
         </div>
 
         <div class="grid gap-5 xl:grid-cols-[190px_minmax(0,1fr)_300px]">

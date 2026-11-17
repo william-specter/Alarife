@@ -18,5 +18,6 @@ tests
 scripts
 Documentation
 Docs
+frankenphp
 *.log
 .phpunit.result.cache

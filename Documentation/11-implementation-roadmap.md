@@ -27,11 +27,13 @@
   validation, ZIP, checksum, caching, download authorization.
 - Author UI: dashboard, wizard, overview, settings, covers, topics, articles, editor, media,
   appearance, publishing, exports.
+- Octane + FrankenPHP runtime and Reverb broadcasting (Redis optional): Live indicator,
+  dashboard activity refresh, remote-editor banner, publication/export updates.
 - Cross-encyclopedia references: picker in the creation wizard and settings, server-side
   validation of published targets, related-works rendering and snapshot pinning.
 - Seed data with five encyclopedias (one per theme), cross-references between three of them,
   and working demo archives.
-- PHPUnit coverage (54 tests) for content rendering, authorization and tenant isolation,
+- PHPUnit coverage (57 tests) for content rendering, authorization and tenant isolation,
   cross-references, article autosave/revisions, publishing, search, downloads and export structure; Vitest
   utilities; Playwright screenshot and offline-export review of key screens.
 
@@ -41,7 +43,8 @@
    over an unproven combination; upgrade is a contained follow-up.
 2. **Pest** → PHPUnit for backend tests (starter kit default); Vitest is configured for
    frontend utilities. Same coverage intent.
-3. **S3/MinIO** → local disk by default with an S3-compatible driver option; the storage
+3. **S3/MinIO** → local disk by default with an S3-compatible driver option; Docker uses the
+   existing shared services and does not pull storage/service images; the storage
    abstraction is used everywhere so switching is config-only.
 4. **PDF/EPUB/Markdown** → deliberately deferred; snapshot architecture supports them.
 5. **Custom domains** → deferred; reader routing resolves slugs today and the lookup seam is

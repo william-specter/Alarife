@@ -21,13 +21,17 @@ distinct themes, publish versioned editions and export complete offline websites
   covers, topics, articles, Tiptap editor, media library, appearance designer, publishing,
   exports.
 - Five versioned themes, one shared Blade renderer for dynamic and static output.
+- Octane + FrankenPHP serving and Reverb WebSockets for real-time collaboration (Redis optional).
 - PostgreSQL schema with JSONB content, publication snapshots, revisions, exports and
   activity logs; policies for tenant isolation.
 - Queued static export pipeline with media collection, relative links, offline search,
   link validation, ZIP checksums and reader downloads.
-- 54 backend tests, Vitest utility tests, typed frontend and Playwright-reviewed UI.
+- 57 backend tests, Vitest utility tests, typed frontend and Playwright-reviewed UI.
 - Cross-encyclopedia references to published articles/topics, validated and pinned in releases.
-- `composer run dev` (pnpm-powered) and a Docker Compose stack that runs the app and queue.
+- `composer run dev` (pnpm-powered: Octane, Reverb, queue, Vite) and a Docker Compose stack that
+  reuses the existing PostgreSQL/Redis infrastructure rather than pulling service images.
+
+Execution details: [`Documentation/13-runtime-realtime-and-execution.md`](Documentation/13-runtime-realtime-and-execution.md).
 
 See the roadmap for documented deviations from the original brief (notably the
 Laravel 12 / Inertia 2 / Tailwind 3.4 starter-kit baseline).

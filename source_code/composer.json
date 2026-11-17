@@ -12,6 +12,8 @@
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
+        "laravel/octane": "^2.24",
+        "laravel/reverb": "^1.13",
         "laravel/tinker": "^2.10.1",
         "predis/predis": "^2.2",
         "tightenco/ziggy": "^2.4"
@@ -54,7 +56,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "pnpm exec concurrently --kill-others --names=server,queue,logs,vite --prefix-colors=blue,magenta,red,yellow \"php artisan serve\" \"php artisan queue:listen --tries=1 --queue=default,exports,media\" \"php artisan pail --timeout=0\" \"pnpm dev\""
+            "pnpm exec concurrently --kill-others --names=server,queue,reverb,logs,vite --prefix-colors=blue,magenta,cyan,red,yellow \"php artisan octane:start --server=frankenphp --host=127.0.0.1 --port=8000 --watch\" \"php artisan queue:listen --tries=1 --queue=default,exports,media\" \"php artisan reverb:start --host=127.0.0.1 --port=8080\" \"php artisan pail --timeout=0\" \"pnpm dev\""
         ],
         "test": [
             "@php artisan test",

@@ -4,6 +4,7 @@ namespace App\Domain\Publishing;
 
 use App\Domain\Activity\RecordActivity;
 use App\Domain\Exports\RequestExport;
+use App\Domain\Realtime\Realtime;
 use App\Models\Encyclopedia;
 use App\Models\Publication;
 use App\Models\User;
@@ -81,6 +82,12 @@ class PublishEncyclopedia
 
         $encyclopedia->refresh();
         ($this->exports)($encyclopedia, null, [], $publication, true);
+        app(Realtime::class)->encyclopedia($encyclopedia, 'publication.published', [
+            'publication_id' => $publication->id,
+            'version' => $publication->version,
+            'article_count' => $publication->article_count,
+            'published_at' => $publication->published_at?->toIso8601String(),
+        ]);
 
         return $publication;
     }

@@ -34,6 +34,7 @@ what was compared, the issues found, and how they were resolved.
 | Reader download button produced no file | Verified streaming download of the current release (`ancient-civilizations.zip`) |
 | Export cards remained “queued” in the UI | Client polls `/status` and watches refreshed Inertia props |
 | Cross-encyclopedia references needed a safe authoring flow | Shared picker searches published works only; server re-validates every target and snapshots pin the selection |
+| Polling made the UI feel static | Reverb WebSocket updates now refresh the dashboard, show remote-editor banners and update export progress in place; polling remains a fallback |
 | Draft content could accidentally trigger a draft export from the public download | Reader download requires a latest publication; `RequestExport(public: true)` fails without one |
 
 ## Verification flows exercised
@@ -62,6 +63,8 @@ what was compared, the issues found, and how they were resolved.
 | Cross-references in the creation wizard | [`screenshots/admin-create-cross-references.png`](screenshots/admin-create-cross-references.png) |
 | Cross-references in settings | [`screenshots/admin-cross-references-settings.png`](screenshots/admin-cross-references-settings.png) |
 | Reader related works | [`screenshots/reader-cross-references.png`](screenshots/reader-cross-references.png) |
+| Real-time collaboration banner | [`screenshots/admin-realtime-collaboration.png`](screenshots/admin-realtime-collaboration.png) |
+| Real-time export progress | [`screenshots/admin-realtime-export.png`](screenshots/admin-realtime-export.png) |
 
 ## Remaining UX improvements
 

@@ -3,6 +3,7 @@
 namespace App\Domain\Articles;
 
 use App\Domain\Activity\RecordActivity;
+use App\Domain\Realtime\Realtime;
 use App\Models\Article;
 use App\Models\ArticleRevision;
 use App\Models\User;
@@ -32,6 +33,15 @@ class RestoreRevision
             ($this->activity)($article->encyclopedia, $user, 'article.restored', $article, [
                 'restored_from' => $revision->revision_number,
                 'revision' => $article->revision_number,
+            ]);
+
+            app(Realtime::class)->encyclopedia($article->encyclopedia, 'article.restored', [
+                'article_id' => $article->id,
+                'title' => $article->title,
+                'status' => $article->status,
+                'revision' => $article->revision_number,
+                'editor_id' => $user->id,
+                'editor' => $user->name,
             ]);
 
             return $article;

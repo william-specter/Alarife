@@ -21,6 +21,10 @@ Tiptap editor, five reader themes, immutable publication snapshots and a complet
   JavaScript search index, validate links and package a checksummed ZIP that works from
   `file://` without a server, remote font or CDN.
 - **Authorization and tenant isolation** enforced server-side through policies.
+- **Real-time collaboration** through Laravel Reverb (no Redis required) with private
+  encyclopedia/user channels, live activity and export progress.
+- **Octane + FrankenPHP** application server for fast worker-based responses.
+- **Cross-encyclopedia references** to published articles/topics, pinned in releases.
 
 ## Requirements
 
@@ -28,9 +32,10 @@ Tiptap editor, five reader themes, immutable publication snapshots and a complet
 - Composer 2
 - PostgreSQL 15+ (tested on 18)
 - Node.js 22+ and **pnpm 10** (pinned via `packageManager`)
-- Redis (optional locally; recommended in production)
+- Redis: **optional** (database cache/queue/session is the default)
+- Reverb WebSocket server (started by `composer run dev`)
 - A queue worker for exports (`php artisan queue:work --queue=exports,default`)
-- Optional: `docker compose up -d postgres redis minio` for local services
+- Optional: Docker for the app, reusing the existing shared PostgreSQL/Redis containers
 
 ## Setup
 
@@ -46,10 +51,13 @@ php artisan migrate --seed
 php artisan storage:link
 
 pnpm install --frozen-lockfile
+php artisan octane:install --server=frankenphp   # one-time local FrankenPHP binary
 
-# one command (pnpm + concurrently): server, queue, logs and Vite
+# one command: Octane/FrankenPHP + queue + Reverb + logs + Vite
 composer run dev
 ```
+
+The full runtime guide is [`../Documentation/13-runtime-realtime-and-execution.md`](../Documentation/13-runtime-realtime-and-execution.md).
 
 Demo accounts created by the seeder:
 
@@ -64,22 +72,27 @@ releases and generated offline archives.
 ## Verification
 
 ```bash
-php artisan test                 # 54 backend tests
+php artisan test                 # 57 backend tests
 pnpm test:unit                   # Vitest helpers
 pnpm exec vue-tsc --noEmit       # TypeScript
 pnpm build                       # production assets
 vendor/bin/pint --test           # PHP style
 ```
 
-Docker (app + queue + PostgreSQL + Redis; MinIO optional):
+Docker (Octane/FrankenPHP + Reverb + queue, using the **existing** PostgreSQL container;
+no PostgreSQL/Redis/Keycloak images are pulled):
 
 ```bash
+docker start sourcecode-postgres-1
+docker exec sourcecode-postgres-1 psql -U dev_user -d chargman \
+  -c "CREATE DATABASE alarife OWNER dev_user;"   # first time only
 docker compose up -d --build
-docker compose exec -u www-data app php artisan db:seed --force
-# http://localhost:8000
+docker compose exec -u www-data app php artisan migrate:fresh --seed
+# app: http://localhost:8000 | websockets: http://localhost:8080
 ```
 
-MinIO is optional: `docker compose --profile object-storage up -d minio`.
+Keycloak is present in the shared environment but **not used**; authentication remains
+Laravel session auth (no SSO). Redis is bundled in the shared environment but optional.
 
 Offline export smoke test (after generating an archive):
 
@@ -89,7 +102,7 @@ unzip ancient-civilizations.zip -d /tmp/offline
 # open /tmp/offline/ancient-civilizations/index.html in a browser
 ```
 
-Reference Playwright scripts used for the UI review live in `scripts/`.
+Reference Playwright scripts used for the UI/realtime review live in `scripts/`.
 
 ## Architecture in one paragraph
 

@@ -3,6 +3,7 @@
 namespace App\Domain\Exports;
 
 use App\Domain\Publishing\SnapshotBuilder;
+use App\Domain\Realtime\Realtime;
 use App\Models\EncyclopediaExport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,12 +43,14 @@ class GenerateEncyclopediaExport implements ShouldQueue
                 'started_at' => now(),
                 'error_message' => null,
             ]);
+            $this->broadcast($export, 10);
 
             $snapshot = $this->snapshot($export, $snapshots);
             $export->update(['progress' => 25]);
 
             $stats = $writer->write($export, $snapshot, $siteDir);
             $export->update(['progress' => 80]);
+            $this->broadcast($export, 80);
 
             $archivePath = RequestExport::archivePath($export);
             $absolute = Storage::disk('local')->path($archivePath);
@@ -62,6 +65,7 @@ class GenerateEncyclopediaExport implements ShouldQueue
                 'completed_at' => now(),
                 'error_message' => null,
             ]);
+            $this->broadcast($export, 100);
 
             File::deleteDirectory(storage_path('app/exports/'.$export->id));
         } catch (Throwable $exception) {
@@ -71,11 +75,29 @@ class GenerateEncyclopediaExport implements ShouldQueue
                 'error_message' => mb_substr($exception->getMessage(), 0, 2000),
                 'completed_at' => now(),
             ]);
+            $this->broadcast($export, 0);
 
             File::deleteDirectory(storage_path('app/exports/'.$export->id));
 
             report($exception);
         }
+    }
+
+    private function broadcast(EncyclopediaExport $export, int $progress): void
+    {
+        $export->refresh();
+        app(Realtime::class)->encyclopedia($export->encyclopedia, 'export.updated', [
+            'export_id' => $export->id,
+            'status' => $export->status,
+            'progress' => $progress,
+            'archive_size' => $export->archive_size,
+            'checksum' => $export->checksum,
+            'error_message' => $export->error_message,
+            'completed_at' => $export->completed_at?->toIso8601String(),
+            'download_url' => $export->isCompleted()
+                ? route('author.exports.download', [$export->encyclopedia->slug, $export->id])
+                : null,
+        ]);
     }
 
     private function snapshot(EncyclopediaExport $export, SnapshotBuilder $snapshots): array

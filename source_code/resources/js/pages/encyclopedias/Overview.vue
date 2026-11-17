@@ -3,8 +3,9 @@ import AuthorLayout from '@/components/author/AuthorLayout.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import StatTile from '@/components/StatTile.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import { useEncyclopediaRealtime } from '@/composables/useRealtime';
 import { formatDate, relativeTime, wordLabel } from '@/lib/format';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { ArrowUpRight, Check, Circle, FileText, Plus, Rocket, Sparkles } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
@@ -32,6 +33,17 @@ const props = defineProps<{
     canPublish: boolean;
     canEdit: boolean;
 }>();
+
+let refreshTimer: number | null = null;
+
+useEncyclopediaRealtime(props.encyclopedia.id, () => {
+    if (refreshTimer) window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(() => {
+        router.reload({
+            only: ['encyclopedia', 'counts', 'recentArticles', 'latestRelease', 'readiness'],
+        });
+    }, 300);
+});
 
 const readyCount = computed(() => props.readiness.filter((item) => item.done).length);
 const readyPercent = computed(() => Math.round((readyCount.value / props.readiness.length) * 100));

@@ -3,6 +3,7 @@
 namespace App\Domain\Articles;
 
 use App\Domain\Activity\RecordActivity;
+use App\Domain\Realtime\Realtime;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -49,6 +50,15 @@ class ChangeArticleStatus
 
         ($this->activity)($article->encyclopedia, $user, 'article.'.$status, $article, [
             'title' => $article->title,
+        ]);
+
+        app(Realtime::class)->encyclopedia($article->encyclopedia, 'article.status', [
+            'article_id' => $article->id,
+            'title' => $article->title,
+            'status' => $article->status,
+            'revision' => $article->revision_number,
+            'editor_id' => $user->id,
+            'editor' => $user->name,
         ]);
 
         return $article;

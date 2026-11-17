@@ -15,10 +15,11 @@ RUN composer install --no-dev --no-interaction --no-scripts --no-autoloader --pr
 COPY . .
 RUN composer dump-autoload --optimize --no-scripts
 
-FROM php:8.4-cli-alpine AS app
-RUN apk add --no-cache libpq-dev libzip-dev icu-dev oniguruma-dev postgresql-client su-exec $PHPIZE_DEPS \
-    && docker-php-ext-install pdo_pgsql zip intl opcache \
-    && apk del $PHPIZE_DEPS
+FROM dunglas/frankenphp:php8.4 AS app
+RUN install-php-extensions pdo_pgsql zip intl opcache pcntl \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends gosu \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
@@ -33,4 +34,4 @@ RUN chmod +x /usr/local/bin/alarife-entrypoint
 
 EXPOSE 8000
 ENTRYPOINT ["alarife-entrypoint"]
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--workers=auto", "--max-requests=500"]
