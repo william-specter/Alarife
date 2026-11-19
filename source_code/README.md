@@ -94,6 +94,23 @@ docker compose exec -u www-data app php artisan migrate:fresh --seed
 Keycloak is present in the shared environment but **not used**; authentication remains
 Laravel session auth (no SSO). Redis is bundled in the shared environment but optional.
 
+For offline/air-gapped execution, build/export images online and run the self-contained stack:
+
+```bash
+docker compose build app
+docker save alarife-app:dev postgres:18-alpine -o alarife-images.tar
+# offline host:
+docker load -i alarife-images.tar
+docker compose -f compose.standalone.yaml up -d
+docker compose -f compose.standalone.yaml exec -u www-data app php artisan migrate:fresh --seed
+# http://localhost:8000
+```
+
+The standalone stack bundles PostgreSQL, needs no external network/Redis/Keycloak, and serves
+self-hosted fonts. Full details: `../Documentation/13-runtime-realtime-and-execution.md`. The self-contained
+stack was verified with bundled PostgreSQL, local fonts, seeded content and completed
+exports.
+
 Offline export smoke test (after generating an archive):
 
 ```bash

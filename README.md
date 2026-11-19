@@ -29,9 +29,9 @@ distinct themes, publish versioned editions and export complete offline websites
 - 57 backend tests, Vitest utility tests, typed frontend and Playwright-reviewed UI.
 - Cross-encyclopedia references to published articles/topics, validated and pinned in releases.
 - `composer run dev` (pnpm-powered: Octane, Reverb, queue, Vite) and a Docker Compose stack that
-  reuses the existing PostgreSQL/Redis infrastructure rather than pulling service images.
+  reuses existing shared services online or runs self-contained/offline with bundled PostgreSQL.
 
-Execution details: [`Documentation/13-runtime-realtime-and-execution.md`](Documentation/13-runtime-realtime-and-execution.md).
+Execution details (online and offline Docker): [`Documentation/13-runtime-realtime-and-execution.md`](Documentation/13-runtime-realtime-and-execution.md).
 
 See the roadmap for documented deviations from the original brief (notably the
 Laravel 12 / Inertia 2 / Tailwind 3.4 starter-kit baseline).

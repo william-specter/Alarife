@@ -22,8 +22,8 @@ class SecurityHeaders
                 'Content-Security-Policy',
                 "default-src 'self'; ".
                 "img-src 'self' data: blob:; ".
-                "style-src 'self' 'unsafe-inline' https://fonts.bunny.net; ".
-                "font-src 'self' data: https://fonts.bunny.net https://cdn.jsdelivr.net; ".
+                "style-src 'self' 'unsafe-inline'; ".
+                "font-src 'self' data:; ".
                 "script-src 'self' 'unsafe-inline'; ".
                 "connect-src 'self' ws: wss:; ".
                 "frame-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"

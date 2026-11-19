@@ -44,6 +44,21 @@ docker compose exec -u www-data app php artisan migrate:fresh --seed
 App: `http://localhost:8000` · Reverb: `http://localhost:8080`. Keycloak and SSO are not used;
 Redis is not required by the default configuration.
 
+For an air-gapped/self-contained host, use `compose.standalone.yaml` (bundled PostgreSQL,
+local app image, no external network and no runtime internet). Build/export online, then:
+
+```bash
+docker save alarife-app:dev postgres:18-alpine -o alarife-images.tar
+# offline host
+docker load -i alarife-images.tar
+docker compose -f compose.standalone.yaml up -d
+docker compose -f compose.standalone.yaml exec -u www-data app \
+  php artisan migrate:fresh --seed
+```
+
+The admin font is self-hosted in `public/fonts`; reader themes use system fonts. No runtime
+font/CDN request is required.
+
 ### Environment essentials
 
 ```dotenv

@@ -78,7 +78,11 @@ This is the same database used by the Docker app container, so both workflows sh
 
 ## 3. Docker execution
 
-The stack intentionally **does not download PostgreSQL, Redis or Keycloak images**. It
+There are two Docker modes.
+
+### 3.1 Online / shared mode (`compose.yaml`)
+
+The shared stack intentionally **does not download PostgreSQL, Redis or Keycloak images**. It
 joins the existing shared Docker network (`sourcecode_default` by default) and uses the
 existing PostgreSQL service. The existing Redis and Keycloak containers are not required:
 Redis is optional and Keycloak/SSO is not used.
@@ -123,6 +127,38 @@ Docker notes:
   is used for `queue` and `reverb` because the `app` container performs migrations.
 - The app image builds assets with pnpm and runs `octane:start --server=frankenphp`.
 - MinIO is not part of the default stack; local filesystem storage is used.
+
+### 3.2 Offline / self-contained mode (`compose.standalone.yaml`)
+
+This mode runs PostgreSQL 18 inside its own Compose network, with no external services and
+no internet access at runtime. It uses the local `postgres:18-alpine` image and the already
+built `alarife-app:dev` image; `pull_policy: never` prevents accidental downloads.
+
+Build and export the image bundle on an internet-connected machine:
+
+```bash
+cd source_code
+docker compose build app
+docker save alarife-app:dev postgres:18-alpine -o alarife-images.tar
+```
+
+On the offline host:
+
+```bash
+docker load -i alarife-images.tar
+docker compose -f compose.standalone.yaml up -d
+docker compose -f compose.standalone.yaml exec -u www-data app \
+  php artisan migrate:fresh --seed
+```
+
+Open `http://localhost:8000` and `http://localhost:8080` (Reverb). This mode:
+
+- has its own PostgreSQL volume and database credentials (`alarife`/`alarife`);
+- needs no Redis, Keycloak or external Docker network;
+- serves Instrument Sans from `public/fonts` (no remote font/CDN requests);
+- works with the browser offline/LAN-connected; static exports remain fully offline.
+
+The two modes use the same ports, so run one at a time.
 
 ## 4. Octane and FrankenPHP details
 

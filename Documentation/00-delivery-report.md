@@ -85,6 +85,13 @@ The app returned 200 through FrankenPHP, the reader rendered, 6 cross-references
 all 3 export archives completed. Reverb served `:8080` and the browser showed the **Live**
 indicator.
 
+An offline/self-contained stack is provided by `compose.standalone.yaml`: bundled PostgreSQL,
+local media volumes, self-hosted Instrument Sans, no Redis/Keycloak/external network and
+`pull_policy: never`. Images are exported/imported with `docker save` / `docker load`.
+
+Verified: started the standalone stack, seeded five encyclopedias, loaded local fonts,
+resolved 6 cross-references and completed 3 export archives with no external services.
+
 ## 4. Verification evidence
 
 | Check | Result |
@@ -99,7 +106,8 @@ indicator.
 | Pint | passed |
 | Production asset build | passed |
 | Composer dev with pnpm | verified (Octane/FrankenPHP + Reverb + queue + Vite) |
-| Docker clean bootstrap + seed + exports | verified |
+| Docker shared stack + seed + exports | verified |
+| Docker standalone/offline stack | verified: bundled PostgreSQL, local fonts, seed, exports |
 | Offline export from `file://` | verified: 3 carousel slides, article images, search result, no console errors |
 | Cross-reference UI | verified: wizard search, selection/note, settings list, reader related works |
 | Real-time | verified: Live indicator, dashboard activity refresh, remote-editor banner, export progress |
